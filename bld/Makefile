@@ -12,5 +12,3 @@ CFLAGS += \
 	-I $(SRC_ROOT)/include/libedb \
 
 DEPS += libwispbase
-
-include $(MAKER_ROOT)/Makefile.gcc
