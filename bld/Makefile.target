@@ -1,0 +1,28 @@
+CONFIG_EDB ?= 0
+
+ifeq ($(CONFIG_EDB),1)
+CFLAGS += -DCONFIG_EDB
+
+# Can't use DEPS facility for these because the toolchain has to be GCC
+ifeq ($(TOOLCHAIN),gcc)
+DEPS += libedb libwispbase
+else # TOOLCHAIN != gcc
+
+# libedb is special because it has to be compiled by GCC, not Clang,
+# even if the app is built with Clang
+CFLAGS += -I$(LIB_ROOT)/libedb/src/include
+LFLAGS += -L$(LIB_ROOT)/libedb/bld/gcc
+LIBS += -ledb
+
+# libwispbase is special because it has to be compiled by GCC, not Clang,
+# even if the app is built with Clang
+CFLAGS += -I$(LIB_ROOT)/$(DEP_RELDIR_libwispbase)
+LFLAGS += -L$(LIB_ROOT)/$(DEP_RELDIR_libwispbase)/gcc
+LIBS += -lwispbase
+
+endif # TOOLCHAIN != gcc
+
+THIS_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+include $(THIS_DIR)/Makefile.config
+
+endif # CONFIG_EDB
