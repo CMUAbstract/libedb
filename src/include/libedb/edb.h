@@ -13,38 +13,6 @@
 #include "pin_assign.h"
 #include "target_comm.h"
 
-// Encode debugger state machine state onto pins
-// #define CONFIG_STATE_PINS
-
-// Passive breakpoints and external breakpoints are exclusive since they share
-// the codepoint pins
-// #define CONFIG_ENABLE_PASSIVE_BREAKPOINTS
-
-#define CONFIG_ENABLE_WATCHPOINTS
-
-// #define CONFIG_ENABLE_TARGET_SIDE_DEBUG_MODE
-
-// Turn on an LED when in active debug mode
-#define LED_IN_DEBUG_STATE
-
-// On these boards target doesn't exit the ISR (or re-enters it
-// immediately) -- not sure what exactly is going on, but this
-// seems to fix it.
-#if defined(BOARD_SPRITE_APP_SOCKET_RHA) || defined(BOARD_SPRITE_APP)
-#define UNMASK_DEBUGGER_SIGNAL_WORKAROUND
-#endif
-
-// #define CONFIG_PASSIVE_BREAKPOINT_IMPL_C
-#define CONFIG_PASSIVE_BREAKPOINT_IMPL_ASM
-
-/* @brief Enable the special boot breakpoint
- * @details The boot breakpoint is turned on by setting
- *          all breakpoint pins to high. This is very hacky because it
- *          overloads the meaning of all breakpoints high, which normally
- *          simply means that all external breakpoints are enabled.
- */
-// #define ENABLE_BOOT_BREAKPOINT
-
 /**
  * @brief Size of the buffer for receiving bytes from the debugger via UART
  *
@@ -53,6 +21,13 @@
  *          size is fixed at one byte, so this buffer size is not relevant.
  */
 #define CONFIG_DEBUG_UART_BUF_LEN				2
+
+// On these boards target doesn't exit the ISR (or re-enters it
+// immediately) -- not sure what exactly is going on, but this
+// seems to fix it.
+#if defined(BOARD_SPRITE_APP_SOCKET_RHA) || defined(BOARD_SPRITE_APP)
+#define UNMASK_DEBUGGER_SIGNAL_WORKAROUND
+#endif
 
 #ifdef CONFIG_ENABLE_PASSIVE_BREAKPOINTS
 
