@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <wisp-base.h>
 
+#include <libmsp/periph.h>
+
 #ifdef __clang__
 #include <msp-builtins.h>
 #endif
@@ -659,20 +661,12 @@ void edb_set_app_output_cb(app_output_cb_t *cb)
     app_output_cb = cb;
 }
 
-#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
-#pragma vector=PORT3_VECTOR
-__interrupt
-#elif defined(__GNUC__)
-__attribute__ ((interrupt(PORT3_VECTOR)))
-#else
-#error Compiler not supported!
-#endif
-void PORT3_ISR(void)
+__attribute__ ((interrupt(GPIO_VECTOR(PORT_SIG))))
+void GPIO_ISR(PORT_SIG)(void)
 {
-	switch(__even_in_range(P3IV, P3IV_P3IFG7))
+	switch(__even_in_range(INTVEC(PORT_SIG), INTVEC_RANGE(PORT_SIG)))
 	{
         case INTFLAG(PORT_SIG, PIN_SIG):
-
 #if 0
             // This is a hack. We use this pin for a different purpose, not
             // related to libedb: to wakeup from sleep. We cannot put this isr
@@ -793,6 +787,8 @@ void PORT3_ISR(void)
 	}
 }
 #ifdef __clang__
+// TODO: is this still necesarry -- was clang fixed since then?
+// TODO: make symbolic in terms of PORT_SIG
 __attribute__ ((section("__interrupt_vector_port1"),aligned(2)))
-void (*__vector_port1)(void) = PORT1_ISR;
+void (*__vector_port1)(void) = GPIO_ISR(PORT_SIG);
 #endif

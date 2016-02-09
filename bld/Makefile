@@ -11,6 +11,8 @@ CFLAGS += \
 	-I $(SRC_ROOT) \
 	-I $(SRC_ROOT)/include/libedb \
 
-DEPS += libwispbase
+DEPS += \
+	libwispbase \
+	libmsp \
 
 include ../Makefile.config # one up from toolchain subdirs
