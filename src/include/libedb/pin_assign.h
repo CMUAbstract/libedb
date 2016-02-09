@@ -34,6 +34,9 @@
 #define PORT_DEBUG_MODE_LED 4
 #define PIN_DEBUG_MODE_LED  0
 
+#define PORT_DEBUG_LED J
+#define PIN_DEBUG_LED  6
+
 #elif defined(BOARD_SPRITE_APP_SOCKET_RHA)
 
 #define PORT_SIG   3
