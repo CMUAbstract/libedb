@@ -544,15 +544,20 @@ static void debug_main()
     GPIO(PORT_DEBUG_MODE_LED, OUT) |= BIT(PIN_DEBUG_MODE_LED);
 #endif
 
+// NOTE: On these two boards all message sizes should be multiples of header
+// size. If we try to read byte by byte, we miss the bytes. Not sure why it
+// works fine on the EDB board.
+#if defined(BOARD_SPRITE_APP_SOCKET_RHA) || defined(BOARD_SPRITE_APP)
+#define CHUNK_BYTES UART_MSG_HEADER_SIZE
+#else
+#define CHUNK_BYTES 1
+#endif
+
     while(1) {
 
-        // NOTE: all message sizes should be multiples of header size
-        // NOTE: if we try to read byte by byte (at least on sprite board),
-        //       we miss the bytes, not sure why it works on other board
-
         // block until we receive a message
-        UART_receive(uartRxBuf, UART_MSG_HEADER_SIZE);
-        if (parse_cmd(&cmd, uartRxBuf, UART_MSG_HEADER_SIZE)) {
+        UART_receive(uartRxBuf, CHUNK_BYTES);
+        if (parse_cmd(&cmd, uartRxBuf, CHUNK_BYTES)) {
             execute_cmd(&cmd);
         }
 
