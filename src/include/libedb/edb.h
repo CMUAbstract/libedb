@@ -172,7 +172,7 @@ void request_energy_guard_debug_mode();
 /**
  * @brief	Initialize pins used by the debugger board
  */
-void debug_setup();
+void edb_init();
 
 /**
  * @brief Initiate disconnection from debugger to eventually resume application

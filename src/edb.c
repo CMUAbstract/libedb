@@ -612,7 +612,7 @@ static inline void handle_debugger_signal()
     }
 }
 
-void debug_setup()
+void edb_init()
 {
     // these pins report state of the debugger state machine on the target
 #ifdef CONFIG_STATE_PINS
