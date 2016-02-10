@@ -77,7 +77,7 @@ static interrupt_context_t interrupt_context;
 
 volatile uint16_t __fram _libedb_internal_breakpoints = 0x00;
 
-static uint16_t *wisp_sp; // stack pointer on debug entry
+static uint16_t pc; // program counter at time of interrupt (retrieved from stack)
 
 // expecting 2-byte messages from the debugger (identifier byte + descriptor byte)
 static uint8_t uartRxBuf[CONFIG_DEBUG_UART_BUF_LEN];
@@ -309,15 +309,13 @@ static void execute_cmd(cmd_t *cmd)
     {
         case WISP_CMD_GET_PC:
         {
-            uintptr_t address = *(wisp_sp + 11); // 22-byte offset to PC
-
             msg_len = 0;
             tx_buf[msg_len++] = UART_IDENTIFIER_WISP;
             tx_buf[msg_len++] = WISP_RSP_ADDRESS;
             tx_buf[msg_len++] = sizeof(uint32_t);
             tx_buf[msg_len++] = 0; // padding
-            tx_buf[msg_len++] = ((uintptr_t)address >> 0) & 0xff;
-            tx_buf[msg_len++] = ((uintptr_t)address >> 8) & 0xff;
+            tx_buf[msg_len++] = ((uintptr_t)pc >> 0) & 0xff;
+            tx_buf[msg_len++] = ((uintptr_t)pc >> 8) & 0xff;
             tx_buf[msg_len++] = 0; // TODO: 20-bit ptr
             tx_buf[msg_len++] = 0;
 
@@ -685,16 +683,26 @@ void GPIO_ISR(PORT_SIG)(void)
             GPIO(PORT_SIG, IFG) &= ~PIN_SIG;
 #endif
 
-            // Save application stack pointer
-            // TODO: ideally this would be in enter_debug_mode, but then
-            // would need to subtract the extra call frames.
+            // First time the ISR runs, save application stack pointer
+            if (state == STATE_IDLE) {
 #if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
-            wisp_sp = (uint16_t *) __get_SP_register();
+                uint16_t *sp = (uint16_t *) __get_SP_register();
 #elif defined(__GNUC__)
-            wisp_sp = 0x0; // TODO
+                uint16_t *sp;
+                __asm__ (
+                    "mov.w r1, %0\n"
+                    : "=r" (sp) /* output */
+                    : /* no inputs */
+                    : /* no clobbers */
+                );
+
+                /* layout: LOWADDR >>> HIGHADDR (see disasm of  this ISR)
+                 * LOCALS [1x2] | SAVED REGS [12x2] | SR [1x2] | PC [1x2] */
+                pc = *(sp + 1 + 12 + 1); // note: pointer arithmetic
 #else
 #error Compiler not supported!
 #endif
+            }
 
             mask_debugger_signal();
 
