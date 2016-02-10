@@ -30,7 +30,6 @@ static uint8_t tx_buf[TX_BUF_SIZE];
 static app_output_cb_t *app_output_cb = NULL;
 
 typedef enum {
-    STATE_OFF = 0,
     STATE_IDLE,
     STATE_DEBUG,
     STATE_SUSPENDED,
@@ -66,7 +65,7 @@ typedef struct {
     uint8_t features;
 } interrupt_context_t;
 
-static state_t state = STATE_OFF;
+static state_t state = STATE_IDLE;
 
 
 // This is a hack. We use this pin for a different purpose, not related to
