@@ -5,7 +5,8 @@ CFLAGS += -DCONFIG_EDB
 
 # Can't use DEPS facility for these because the toolchain has to be GCC
 ifeq ($(TOOLCHAIN),gcc)
-DEPS += libedb libwispbase
+# NOTE: we include libmspbuiltins here only to be able to build it somehow
+DEPS += libedb libwispbase libmspbuiltins
 else # TOOLCHAIN != gcc
 
 # libedb is special because it has to be compiled by GCC, not Clang,
@@ -19,6 +20,11 @@ LIBS += -ledb
 CFLAGS += -I$(LIB_ROOT)/$(DEP_RELDIR_libwispbase)
 LFLAGS += -L$(LIB_ROOT)/$(DEP_RELDIR_libwispbase)/gcc
 LIBS += -lwispbase
+
+# libmspbuiltins is for clang only, but compiled by gcc
+CFLAGS += -I$(LIB_ROOT)/libmspbuiltins/src/include
+LFLAGS += -L$(LIB_ROOT)/libmspbuiltins/bld/gcc
+LIBS += -lmspbuiltins
 
 endif # TOOLCHAIN != gcc
 
