@@ -5,6 +5,6 @@
 # with comments. Also, flags whose default value is 'unset' do not need to be
 # explicitly listed here.
 
-CONFIG_ENABLE_WATCHPOINTS = 1
-CONFIG_ENABLE_TARGET_SIDE_DEBUG_MODE = 1
-CONFIG_PASSIVE_BREAKPOINT_IMPL = c
+CONFIG_ENABLE_WATCHPOINTS ?= 1
+CONFIG_ENABLE_TARGET_SIDE_DEBUG_MODE ?= 1
+CONFIG_PASSIVE_BREAKPOINT_IMPL ?= c
