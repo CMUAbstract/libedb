@@ -5,6 +5,7 @@
 #include <wisp-base.h>
 
 #include <libmsp/periph.h>
+#include <libmsp/mem.h>
 
 #ifdef __clang__
 #include <msp-builtins.h>
@@ -13,9 +14,6 @@
 #include "edb.h"
 #include "pin_assign.h"
 #include "target_comm.h"
-
-/* The linker script needs to allocate .fram_vars section into FRAM region. */
-#define __fram __attribute__((section(".fram_vars")))
 
 #define DEBUG_RETURN                0x0001 // signals debug main loop to stop
 #define DEBUG_REQUESTED_BY_TARGET   0x0002 // the target requested to enter debug mode
@@ -75,7 +73,7 @@ static state_t state = STATE_IDLE;
 static uint16_t debug_flags = 0;
 static interrupt_context_t interrupt_context;
 
-volatile uint16_t __fram _libedb_internal_breakpoints = 0x00;
+volatile __nv uint16_t _libedb_internal_breakpoints = 0x00;
 
 static uint16_t pc; // program counter at time of interrupt (retrieved from stack)
 
