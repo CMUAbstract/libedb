@@ -2,8 +2,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <wisp-base.h>
 
+#include <libwispbase/wisp-base.h>
 #include <libmsp/periph.h>
 #include <libmsp/mem.h>
 
