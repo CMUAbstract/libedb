@@ -581,11 +581,19 @@ static inline void handle_debugger_signal()
             }
 
             enter_debug_mode();
+
 #ifdef CONFIG_ENABLE_TARGET_SIDE_DEBUG_MODE
-            signal_debugger_with_data(interrupt_context.features);
-#else
+            // If target initiated the debug mode request then, send the
+            // features that the target wants as payload, otherwise don't need
+            // to send any payload with the signal.
+            if (interrupt_context.type != INTERRUPT_TYPE_DEBUGGER_REQ) {
+                signal_debugger_with_data(interrupt_context.features);
+            } else {
+                signal_debugger();
+            }
+#else // !CONFIG_ENABLE_TARGET_SIDE_DEBUG_MODE
             signal_debugger();
-#endif
+#endif // !CONFIG_ENABLE_TARGET_SIDE_DEBUG_MODE
 
 #ifndef UNMASK_DEBUGGER_SIGNAL_WORKAROUND
             unmask_debugger_signal();
