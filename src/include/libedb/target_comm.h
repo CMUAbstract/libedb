@@ -79,14 +79,13 @@ typedef enum {
  * @defgroup DEBUG_MODE_FLAGS   Debug mode flags
  * @brief Flags that define functionality in debug mode
  * @details NOTE: must update CONFIG_SIG_SERIAL_NUM_BITS when this list changes
+ * NOTE: Can only use LSB, since LSB is used internally on the EDB side.
  * @{
  */
 #define DEBUG_MODE_NO_FLAGS         0x00
 #define DEBUG_MODE_INTERACTIVE      0x01
 #define DEBUG_MODE_WITH_UART        0x02
 #define DEBUG_MODE_WITH_I2C         0x04
-
-#define DEBUG_MODE_NESTED           0x08 // not communicated on signal line
 /** @} End DEBUG_MODE_FLAGS */
 
 #define DEBUG_MODE_FULL_FEATURES    (DEBUG_MODE_INTERACTIVE | DEBUG_MODE_WITH_UART)
