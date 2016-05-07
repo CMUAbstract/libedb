@@ -255,6 +255,7 @@ void request_energy_guard_debug_mode()
 }
 #endif // CONFIG_ENABLE_TARGET_SIDE_DEBUG_MODE
 
+#ifdef CONFIG_ENABLE_TARGET_SIDE_DEBUG_MODE // resume_application used only for energy guards
 void resume_application()
 {
     exit_debug_mode();
@@ -271,21 +272,18 @@ void resume_application()
     // very beginning of this function.
     __disable_interrupt();
 
-#ifdef CONFIG_ENABLE_TARGET_SIDE_DEBUG_MODE
     // debugger is in DEBUG state, so our signal needs to contain
     // the information about whether we are exiting the debug mode
     // (as we are here) or whether we are requesting a nested debug
     // mode due to an assert/bkpt.
     signal_debugger_with_data(SIG_CMD_EXIT); // tell debugger we have shutdown UART
-#else
-    signal_debugger();
-#endif
 
     unmask_debugger_signal();
 
     // go to sleep, enable interrupts, and wait for signal from debugger
     __bis_SR_register(DEBUG_MODE_REQUEST_WAIT_STATE_BITS | GIE);
 }
+#endif
 
 uintptr_t mem_addr_from_bytes(uint8_t *buf)
 {
