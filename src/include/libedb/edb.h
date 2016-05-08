@@ -141,8 +141,17 @@ void request_energy_guard_debug_mode();
  *          only two (AUX1 and AUX2).
  */
 #define EXTERNAL_BREAKPOINT(idx) \
-    if (GPIO(PORT_CODEPOINT, IN) & (1 << idx << PIN_CODEPOINT_0)) \
+    if (GPIO(PORT_CODEPOINT, IN) & (1 << INDEX_TO_PIN(idx) << PIN_CODEPOINT_0)) \
         request_debug_mode(INTERRUPT_TYPE_BREAKPOINT, idx, DEBUG_MODE_FULL_FEATURES)
+
+// On the WISP board the AUX1 and AUX2 signals map to pin #n and #(n-1) respectively
+// (i.e. the order is reversed). We reverse the index here, as a workaround.
+#ifdef BOARD_WISP
+#define INDEX_TO_PIN(idx) (NUM_CODEPOINT_PINS - idx - 1)
+#else // !BOARD_WISP
+#define INDEX_TO_PIN(idx) (idx)
+#endif // !BOARD_WISP
+
 #endif // !CONFIG_ENABLE_PASSIVE_BREAKPOINTS
 
 #ifdef CONFIG_ENABLE_WATCHPOINTS

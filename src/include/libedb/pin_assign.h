@@ -26,10 +26,12 @@
 // Code point pins must be on same port
 // NOTE: When using the same pins as PIN_STATE, must disable CONFIG_STATE_PINS
 // NOTE: Cannot use macros in inline assembly, so debug.h has these hardcoded!
+// NOTE: Codepoint pins must be in order, i.e. CODEPOINT_0 -> pin with lowest index.
 #define PORT_CODEPOINT  3
-#define PIN_CODEPOINT_0 5 // lsb
-#define PIN_CODEPOINT_1 4 // msb
+#define PIN_CODEPOINT_0 4 // lsb
+#define PIN_CODEPOINT_1 5 // msb
 #define BITS_CODEPOINT  (BIT(PIN_CODEPOINT_0) | BIT(PIN_CODEPOINT_1))
+#define NUM_CODEPOINT_PINS 2
 
 #define PORT_DEBUG_MODE_LED 4
 #define PIN_DEBUG_MODE_LED  0
