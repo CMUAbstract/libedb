@@ -29,6 +29,14 @@
 #define UNMASK_DEBUGGER_SIGNAL_WORKAROUND
 #endif
 
+// On the WISP board the AUX1 and AUX2 signals map to pin #n and #(n-1) respectively
+// (i.e. the order is reversed). We reverse the index here, as a workaround.
+#ifdef BOARD_WISP
+#define INDEX_TO_PIN(idx) (NUM_CODEPOINT_PINS - idx - 1)
+#else // !BOARD_WISP
+#define INDEX_TO_PIN(idx) (idx)
+#endif // !BOARD_WISP
+
 #ifdef CONFIG_ENABLE_PASSIVE_BREAKPOINTS
 
 // The index argument to breakpoint macros identifies a breakpoint *group*.
@@ -144,14 +152,6 @@ void request_energy_guard_debug_mode();
     if (GPIO(PORT_CODEPOINT, IN) & (1 << INDEX_TO_PIN(idx) << PIN_CODEPOINT_0)) \
         request_debug_mode(INTERRUPT_TYPE_BREAKPOINT, idx, DEBUG_MODE_FULL_FEATURES)
 
-// On the WISP board the AUX1 and AUX2 signals map to pin #n and #(n-1) respectively
-// (i.e. the order is reversed). We reverse the index here, as a workaround.
-#ifdef BOARD_WISP
-#define INDEX_TO_PIN(idx) (NUM_CODEPOINT_PINS - idx - 1)
-#else // !BOARD_WISP
-#define INDEX_TO_PIN(idx) (idx)
-#endif // !BOARD_WISP
-
 #endif // !CONFIG_ENABLE_PASSIVE_BREAKPOINTS
 
 #ifdef CONFIG_ENABLE_WATCHPOINTS
@@ -161,12 +161,14 @@ void request_energy_guard_debug_mode();
  * @details The number of distinct identifiers is (2^NUM_CODEPOINT_PINS - 1)
  */
 #define WATCHPOINT(idx) do { \
-        GPIO(PORT_CODEPOINT, OUT) = (GPIO(PORT_CODEPOINT, OUT) & ~BITS_CODEPOINT) \
-                                        | BIT(PIN_CODEPOINT_ ## idx); \
+        GPIO(PORT_CODEPOINT, OUT) = \
+            (GPIO(PORT_CODEPOINT, OUT) & ~BITS_CODEPOINT) | WATCHPOINT_MASK(idx); \
         __delay_cycles(WATCHPOINT_DURATION); \
-        GPIO(PORT_CODEPOINT, OUT) &= ~BIT(PIN_CODEPOINT_ ## idx); \
+        GPIO(PORT_CODEPOINT, OUT) &= ~WATCHPOINT_MASK(idx); \
         __delay_cycles(WATCHPOINT_LATENCY); \
     } while (0);
+
+#define WATCHPOINT_MASK(idx) (1 << INDEX_TO_PIN(idx) << PIN_CODEPOINT_0)
 
 #else // !CONFIG_ENABLE_WATCHPOINTS
 #define WATCHPOINT(idx)
