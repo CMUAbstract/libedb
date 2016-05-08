@@ -16,8 +16,8 @@ LIBS += -ledb
 
 # libwispbase is special because it has to be compiled by GCC, not Clang,
 # even if the app is built with Clang
-CFLAGS += -I$(LIB_ROOT)/$(DEP_RELDIR_libwispbase)
-LFLAGS += -L$(LIB_ROOT)/$(DEP_RELDIR_libwispbase)/gcc
+CFLAGS += -I$(LIB_ROOT)/libwispbase/src/include
+LFLAGS += -L$(LIB_ROOT)/libwispbase/bld/gcc
 LIBS += -lwispbase
 
 # libmspbuiltins is for clang only, but compiled by gcc
