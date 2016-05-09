@@ -650,6 +650,17 @@ void edb_init()
     GPIO(PORT_CODEPOINT, OUT) &= ~BITS_CODEPOINT;
     GPIO(PORT_CODEPOINT, DIR) |= BITS_CODEPOINT;
 #elif !defined(CONFIG_STATE_PINS) // codepoint pins are inputs for target-side breakpoints
+
+#ifdef CONFIG_PULL_DOWN_ON_CODEPOINT_LINES
+    // TODO: does this drain substantial amount of energy?
+    // NOTE: this does not fix the level-shifter "charging up" problem, because
+    // the problem is on EDB side: the level-shifter thinks it is driven, when
+    // EDB goes into high-Z state. But, EDB has to go into high-Z, else if
+    // it drives codepoint pins low, this causes large energy drain.
+    GPIO(PORT_CODEPOINT, REN) |= BITS_CODEPOINT; // pull-down
+    GPIO(PORT_CODEPOINT, OUT) &= ~BITS_CODEPOINT; // pull-down
+#endif // CONFIG_PULL_DOWN_ON_CODEPOINT_LINES
+
     GPIO(PORT_CODEPOINT, DIR) &= ~BITS_CODEPOINT;
 #endif
 
