@@ -1,4 +1,4 @@
-include ../../../Makefile.env
+include ../Makefile.env
 
 DEVICE  = msp430fr5969
 PREFIX = $(TOOLCHAIN_ROOT)/bin/msp430-elf-
