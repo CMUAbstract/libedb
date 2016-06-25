@@ -5,8 +5,8 @@
  * @brief	Prototypes and definitions for debugging functionality on the WISP.
  */
 
-#ifndef DEBUG_H
-#define DEBUG_H
+#ifndef LIBEDB_EDB_H
+#define LIBEDB_EDB_H
 
 #include <stdint.h>
 
@@ -210,4 +210,4 @@ typedef void (app_output_cb_t)(uint8_t *output, unsigned *len);
  */
 void edb_set_app_output_cb(app_output_cb_t *cb);
 
-#endif
+#endif // LIBEDB_EDB_H
