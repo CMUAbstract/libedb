@@ -185,6 +185,9 @@ void request_energy_guard_debug_mode();
  */
 void edb_init();
 
+/* @brief Macro for conditionally depending on libedb */
+#define EDB_INIT() edb_init()
+
 /**
  * @brief Initiate disconnection from debugger to eventually resume application
  */
