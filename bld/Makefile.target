@@ -30,4 +30,11 @@ endif # TOOLCHAIN != gcc
 THIS_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 include $(THIS_DIR)/Makefile.config
 
+# Needed for building this library from a nested makefile
+export CFLAGS
+#export LFLAGS # TODO: why does this utterly break the build?
+			   # NOTE: we don't need this for TOOLCHAIN=gcc
+export LIBS
+export DEPS
+
 endif # CONFIG_EDB
