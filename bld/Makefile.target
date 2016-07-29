@@ -5,7 +5,7 @@ CFLAGS += -DCONFIG_EDB
 
 # Can't use DEPS facility for these because the toolchain has to be GCC
 ifeq ($(TOOLCHAIN),gcc)
-DEPS += libedb libwispbase
+override DEPS += libedb libwispbase
 else # TOOLCHAIN != gcc
 
 # libedb is special because it has to be compiled by GCC, not Clang,
