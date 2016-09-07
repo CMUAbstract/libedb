@@ -14,7 +14,7 @@ static uint8_t *msg_payload = &msg_buf[UART_MSG_HEADER_SIZE];
 
 static unsigned stdio_payload_len = 0;
 
-int putchar(int c)
+int io_putchar(int c)
 {
     unsigned msg_len = 0;
     
@@ -67,12 +67,12 @@ static int puts_base(const char *ptr, bool newline)
     return 0;
 }
 
-int puts_no_newline(const char *ptr)
+int io_puts_no_newline(const char *ptr)
 {
     return puts_base(ptr, false /* newline */);
 }
 
-int puts(const char *ptr)
+int io_puts(const char *ptr)
 {
     return puts_base(ptr, true /* newline */);
 }

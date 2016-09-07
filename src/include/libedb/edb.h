@@ -12,6 +12,7 @@
 
 #include "pin_assign.h"
 #include "target_comm.h"
+#include "printf.h"
 
 /**
  * @brief Size of the buffer for receiving bytes from the debugger via UART

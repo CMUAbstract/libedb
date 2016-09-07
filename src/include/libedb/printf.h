@@ -2,6 +2,9 @@
 #define PRINTF_H
 
 int printf(const char *format, ...);
+int io_putchar(int c);
+int io_puts_no_newline(const char *ptr);
+int io_puts(const char *ptr);
 
 void UART_init(); // defined by wisp-base
 void UART_teardown(); // defined by libedb
