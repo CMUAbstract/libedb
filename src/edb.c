@@ -697,9 +697,8 @@ void GPIO_ISR(PORT_SIG)(void)
             // in the interrupt context (we return from interrupt on exit
             // from the debug node) and we re-use the signal pin before exit.
 #ifndef UNMASK_DEBUGGER_SIGNAL_WORKAROUND
-            GPIO(PORT_SIG, IFG) &= ~PIN_SIG;
+            GPIO(PORT_SIG, IFG) &= ~BIT(PIN_SIG);
 #endif
-
             // First time the ISR runs, save application stack pointer
             if (state == STATE_IDLE) {
 #if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
