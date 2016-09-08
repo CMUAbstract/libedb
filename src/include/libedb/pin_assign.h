@@ -14,7 +14,7 @@
 // (a control bit for TAxCCTLx uses the name 'OUT')
 #undef OUT
 
-#if defined(BOARD_WISP)
+#if defined(BOARD_WISP) || defined(BOARD_MSP_EXP430FR6989)
 
 #define PORT_STATE  3
 #define PIN_STATE_0 4 // lsb
@@ -28,8 +28,13 @@
 // NOTE: Cannot use macros in inline assembly, so debug.h has these hardcoded!
 // NOTE: Codepoint pins must be in order, i.e. CODEPOINT_0 -> pin with lowest index.
 #define PORT_CODEPOINT  3
+#if defined(BOARD_MSP_EXP430FR6989) // P3.4 and P3.5 are occupied (for serial connection to somewhere)
+#define PIN_CODEPOINT_0 3 // lsb
+#define PIN_CODEPOINT_1 4 // msb
+#else // !BOARD_MSP_EXP430FR6989
 #define PIN_CODEPOINT_0 4 // lsb
 #define PIN_CODEPOINT_1 5 // msb
+#endif // !BOARD_MSP_EXP430FR6989
 #define BITS_CODEPOINT  (BIT(PIN_CODEPOINT_0) | BIT(PIN_CODEPOINT_1))
 #define NUM_CODEPOINT_PINS 2
 
