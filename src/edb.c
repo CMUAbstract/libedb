@@ -676,6 +676,8 @@ void edb_set_app_output_cb(app_output_cb_t *cb)
 __attribute__ ((interrupt(GPIO_VECTOR(PORT_SIG))))
 void GPIO_ISR(PORT_SIG)(void)
 {
+	GPIO(PORT_SIG, IFG) &= BIT(PIN_SIG); // clear irrelevant ints
+
 	switch(__even_in_range(INTVEC(PORT_SIG), INTVEC_RANGE(PORT_SIG)))
 	{
         case INTFLAG(PORT_SIG, PIN_SIG):
