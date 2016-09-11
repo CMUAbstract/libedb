@@ -219,7 +219,7 @@ void exit_debug_mode()
 void send_interrupted_msg()
 {
     // Prepare settings to be applied on wakeup from ISR (see below)
-    debug_flags |= DEBUG_REQUESTED_BY_TARGET; // TODO: this is always the case
+    debug_flags |= DEBUG_REQUESTED_BY_TARGET;
     interrupt_context.type = INTERRUPT_TYPE_DEBUGGER_REQ;
     interrupt_context.features = DEBUG_MODE_FULL_FEATURES;
 
