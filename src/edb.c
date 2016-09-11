@@ -624,6 +624,11 @@ void edb_init()
     GPIO(PORT_STATE, DIR) |= BIT(PIN_STATE_0) | BIT(PIN_STATE_1); // output
 #endif
 
+#ifdef CONFIG_EVENT_PINS
+    GPIO(PORT_EVENT, OUT) &= ~(BIT(PIN_EVENT_0) | BIT(PIN_EVENT_1)); // output low
+    GPIO(PORT_EVENT, DIR) |= BIT(PIN_EVENT_0) | BIT(PIN_EVENT_1); // output
+#endif
+
     GPIO(PORT_SIG, DIR) &= ~BIT(PIN_SIG); // input
     GPIO(PORT_SIG, IFG) &= ~BIT(PIN_SIG); // clear interrupt flag (might have been set by the above)
 

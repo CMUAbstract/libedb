@@ -16,9 +16,23 @@
 
 #if defined(BOARD_WISP) || defined(BOARD_MSP_EXP430FR6989)
 
+#ifdef BOARD_WISP
+
 #define PORT_STATE  3
 #define PIN_STATE_0 4 // lsb
 #define PIN_STATE_1 5 // msb
+
+#elif defined(BOARD_MSP_EXP430FR6989)
+
+#define PORT_STATE  8
+#define PIN_STATE_0 4 // lsb
+#define PIN_STATE_1 5 // msb
+
+#define PORT_EVENT  8
+#define PIN_EVENT_0 6 // lsb
+#define PIN_EVENT_1 7 // msb
+
+#endif // BOARD
 
 #define PORT_SIG   1
 #define PIN_SIG    4
