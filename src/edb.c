@@ -207,6 +207,40 @@ void exit_debug_mode()
     clear_interrupt_context();
 }
 
+/**
+ * @brief Send a message in response to debugger's request to
+ *        enter debug mode on boot.
+ *
+ * @details We have no choice but to communicate to EDB via UART
+ *          because, when EDB requests the target to enter debug
+ *          mode on boot, EDB drives the signal line high, so
+ *          we can't use that line to communicate.
+ */
+void send_interrupted_msg()
+{
+    // Prepare settings to be applied on wakeup from ISR (see below)
+    debug_flags |= DEBUG_REQUESTED_BY_TARGET; // TODO: this is always the case
+    interrupt_context.type = INTERRUPT_TYPE_DEBUGGER_REQ;
+    interrupt_context.features = DEBUG_MODE_FULL_FEATURES;
+
+    unmask_debugger_signal();
+
+    UART_init();
+
+    unsigned msg_len = 0;
+    tx_buf[msg_len++] = UART_IDENTIFIER_WISP;
+    tx_buf[msg_len++] = WISP_RSP_INTERRUPTED;
+    tx_buf[msg_len++] = 0;
+    tx_buf[msg_len++] = 0; // padding
+
+    UART_send(tx_buf, msg_len);
+
+    // Wait for debugger to turn on power supply and notify us
+    __bis_SR_register(DEBUG_MODE_REQUEST_WAIT_STATE_BITS | GIE);
+
+    // On wakeup, we end up in the target<->debugger signal ISR
+}
+
 #ifdef CONFIG_ENABLE_TARGET_SIDE_DEBUG_MODE
 void request_debug_mode(interrupt_type_t int_type, unsigned int_id, unsigned features)
 {
@@ -571,7 +605,7 @@ static void debug_main()
 static inline void handle_debugger_signal()
 {
     switch (state) {
-        case STATE_IDLE: // debugger requested us to enter debug mode
+        case STATE_IDLE: // debugger requested debug mode on boot, we responded, and debugger responded
         case STATE_DEBUG: // debugger requested to enter a *nested* debug mode
 
             // If entering debug mode on debugger's initiative (i.e. when we
@@ -595,10 +629,6 @@ static inline void handle_debugger_signal()
 #else // !CONFIG_ENABLE_TARGET_SIDE_DEBUG_MODE
             signal_debugger();
 #endif // !CONFIG_ENABLE_TARGET_SIDE_DEBUG_MODE
-
-#ifndef UNMASK_DEBUGGER_SIGNAL_WORKAROUND
-            unmask_debugger_signal();
-#endif
 
             if (interrupt_context.features & DEBUG_MODE_INTERACTIVE) {
                 debug_main();
@@ -637,18 +667,6 @@ void edb_init()
     GPIO(PORT_DEBUG_MODE_LED, DIR) |= BIT(PIN_DEBUG_MODE_LED);
 #endif
 
-    unmask_debugger_signal();
-
-    set_state(STATE_IDLE);
-
-    __enable_interrupt();
-
-#ifdef CONFIG_ENABLE_BOOT_BREAKPOINT
-    // Breakpoint # (2^max - 1) is always set at boot (even with watchpoints enabled)
-    if ((GPIO(PORT_CODEPOINT, IN) & BITS_CODEPOINT) == BITS_CODEPOINT)
-        request_debug_mode(INTERRUPT_TYPE_BOOT, 0, DEBUG_MODE_FULL_FEATURES);
-#endif
-
     // Codepoint pin config must be after the boot breakpoint since may change dir
 
 #if defined(CONFIG_ENABLE_PASSIVE_BREAKPOINTS) || defined(CONFIG_ENABLE_WATCHPOINTS)
@@ -670,8 +688,16 @@ void edb_init()
     GPIO(PORT_CODEPOINT, DIR) &= ~BITS_CODEPOINT;
 #endif
 
+    set_state(STATE_IDLE);
+
     // For measuring boot latency
     // GPIO(PORT_STATE, OUT) |= BIT(PIN_STATE_0);
+
+    __enable_interrupt();
+
+    // Check if EDB requested us to enter debug mode
+    if ((GPIO(PORT_SIG, IN) & BIT(PIN_SIG)) == BIT(PIN_SIG))
+        send_interrupted_msg();
 }
 
 void edb_set_app_output_cb(app_output_cb_t *cb)
@@ -699,12 +725,6 @@ void GPIO_ISR(PORT_SIG)(void)
             }
 #endif
 
-            // Clear the int flag, because during active debug mode, we are
-            // in the interrupt context (we return from interrupt on exit
-            // from the debug node) and we re-use the signal pin before exit.
-#ifndef UNMASK_DEBUGGER_SIGNAL_WORKAROUND
-            GPIO(PORT_SIG, IFG) &= ~BIT(PIN_SIG);
-#endif
             // First time the ISR runs, save application stack pointer
             if (state == STATE_IDLE) {
 #if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)

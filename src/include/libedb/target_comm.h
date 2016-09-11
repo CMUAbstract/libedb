@@ -64,6 +64,7 @@ typedef enum {
     WISP_RSP_SERIAL_ECHO            = 0x04, //!< response to the serial echo request
     WISP_RSP_STDIO                  = 0x05, //!< data from printf
     WISP_RSP_APP_OUTPUT             = 0x06, //!< application output to be relayed to host/ground
+    WISP_RSP_INTERRUPTED            = 0x07, //!< target has received interrupt request from debugger
 } wisp_rsp_t;
 
 /** @} End UART_PROTOCOL */
@@ -122,6 +123,12 @@ typedef enum {
     SIG_CMD_EXIT                            = 2,
 } sig_cmd_t;
 
+/** @brief Time for target to start listening for debugger's signal after having replied
+ *         via UART to the debugger's request for entering debug mode on boot
+ *
+ *         In practice, the extra instructions are enough to mask this latency, so zero.
+ */
+#define INTERRUPT_ON_BOOT_LATENCY 0
 
 /** @brief Latency between a code point marker edge and the signal to enter debug mode 
  *
