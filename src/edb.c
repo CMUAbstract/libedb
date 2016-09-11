@@ -178,6 +178,7 @@ static void unmask_debugger_signal()
 static void mask_debugger_signal()
 {
     GPIO(PORT_SIG, IE) &= ~BIT(PIN_SIG); // disable interrupt
+    GPIO(PORT_SIG, IFG) &= ~BIT(PIN_SIG);
     //sig_active = false;
 }
 
