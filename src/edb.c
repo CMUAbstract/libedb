@@ -696,8 +696,12 @@ void edb_init()
     __enable_interrupt();
 
     // Check if EDB requested us to enter debug mode
-    if ((GPIO(PORT_SIG, IN) & BIT(PIN_SIG)) == BIT(PIN_SIG))
+    if ((GPIO(PORT_SIG, IN) & BIT(PIN_SIG)) == BIT(PIN_SIG)) {
         send_interrupted_msg();
+    } else {
+        // Listen for debugger request to enter debug mode
+        unmask_debugger_signal();
+    }
 }
 
 void edb_set_app_output_cb(app_output_cb_t *cb)
