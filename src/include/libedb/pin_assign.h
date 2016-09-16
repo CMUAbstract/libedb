@@ -78,6 +78,23 @@
 #define PORT_DEBUG_MODE_LED 1
 #define PIN_DEBUG_MODE_LED  0
 
+#elif defined(BOARD_SPRITE_APP)
+
+#define PORT_SIG   3
+#define PIN_SIG    0
+
+// Code point pins must be on same port and consecutive
+// NOTE: When using the same pins as PIN_STATE, must disable CONFIG_STATE_PINS
+// NOTE: Cannot use macros in inline assembly, so debug.h has these hardcoded!
+#define PORT_CODEPOINT  3
+#define PIN_CODEPOINT_0 1 // lsb
+#define PIN_CODEPOINT_1 2 // msb
+#define PIN_CODEPOINT_2 3 // msb
+#define BITS_CODEPOINT  (\
+    BIT(PIN_CODEPOINT_0) | \
+    BIT(PIN_CODEPOINT_1) | \
+    BIT(PIN_CODEPOINT_2))
+
 #endif // BOARD_*
 
 #endif // LIBDEBUG_PIN_ASSIGN_H
