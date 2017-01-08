@@ -29,13 +29,18 @@
 #define UNMASK_DEBUGGER_SIGNAL_WORKAROUND
 #endif
 
-// On the WISP board the AUX1 and AUX2 signals map to pin #n and #(n-1) respectively
-// (i.e. the order is reversed). We reverse the index here, as a workaround.
+// On the EDBv1.0 board the AUX1 and AUX2 signals are routed to pin #n and
+// #(n-1) respectively (i.e. the order is reversed). We reverse the index here,
+// as a workaround.
+#if LIBEDB_BOARD_VERSION_MAJOR == 1 && LIBEDB_BOARD_VERSION_MINOR == 0
 #ifdef BOARD_WISP
 #define INDEX_TO_PIN(idx) (NUM_CODEPOINT_PINS - idx - 1)
 #else // !BOARD_WISP
 #define INDEX_TO_PIN(idx) (idx)
 #endif // !BOARD_WISP
+#else // LIBEDB_BOARD_VERSION != 1.0
+#define INDEX_TO_PIN(idx) (idx)
+#endif // LIBEDB_BOARD_VERSION
 
 #ifdef CONFIG_ENABLE_PASSIVE_BREAKPOINTS
 
