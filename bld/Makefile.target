@@ -1,29 +1,29 @@
 CONFIG_EDB ?= 0
 
 ifeq ($(CONFIG_EDB),1)
-CFLAGS += -DCONFIG_EDB
+override CFLAGS += -DCONFIG_EDB
 
 # Can't use DEPS facility for these because the toolchain has to be GCC
 ifeq ($(TOOLCHAIN),gcc)
-DEPS += libedb libwispbase
+override DEPS += libedb libwispbase
 else # TOOLCHAIN != gcc
 
 # libedb is special because it has to be compiled by GCC, not Clang,
 # even if the app is built with Clang
-CFLAGS += -I$(LIB_ROOT)/libedb/src/include
-LFLAGS += -L$(LIB_ROOT)/libedb/bld/gcc
-LIBS += -ledb
+override CFLAGS += -I$(LIB_ROOT)/libedb/src/include
+override LFLAGS += -L$(LIB_ROOT)/libedb/bld/gcc
+override LIBS += -ledb
 
 # libwispbase is special because it has to be compiled by GCC, not Clang,
 # even if the app is built with Clang
-CFLAGS += -I$(LIB_ROOT)/libwispbase/src/include
-LFLAGS += -L$(LIB_ROOT)/libwispbase/bld/gcc
-LIBS += -lwispbase
+#CFLAGS += -I$(LIB_ROOT)/libwispbase/src/include
+#LFLAGS += -L$(LIB_ROOT)/libwispbase/bld/gcc
+#LIBS += -lwispbase
 
 # libmspbuiltins is for clang only, but compiled by gcc
-CFLAGS += -I$(LIB_ROOT)/libmspbuiltins/src/include
-LFLAGS += -L$(LIB_ROOT)/libmspbuiltins/bld/gcc
-LIBS += -lmspbuiltins
+#CFLAGS += -I$(LIB_ROOT)/libmspbuiltins/src/include
+#LFLAGS += -L$(LIB_ROOT)/libmspbuiltins/bld/gcc
+#LIBS += -lmspbuiltins
 
 endif # TOOLCHAIN != gcc
 
