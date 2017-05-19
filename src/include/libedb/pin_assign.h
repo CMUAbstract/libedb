@@ -95,14 +95,14 @@
 #elif defined(BOARD_SPRITE_APP_1_2)
 
 #define PORT_SIG   3
-#define PIN_SIG    0
+#define PIN_SIG    5
 
 #define PORT_CODEPOINT  3
-#define PIN_CODEPOINT_0 1
-#define PIN_CODEPOINT_1 2
-#define PIN_CODEPOINT_2 3
-#define PIN_CODEPOINT_3 4
-#define PIN_CODEPOINT_4 5
+#define PIN_CODEPOINT_0 0
+#define PIN_CODEPOINT_1 1
+#define PIN_CODEPOINT_2 2
+#define PIN_CODEPOINT_3 3
+#define PIN_CODEPOINT_4 4
 #define BITS_CODEPOINT  (\
     BIT(PIN_CODEPOINT_0) | \
     BIT(PIN_CODEPOINT_1) | \
