@@ -193,20 +193,25 @@ static void enter_debug_mode()
 {
     __enable_interrupt();
 
+#ifdef LIBEDB_ENABLE_UART
     if (interrupt_context.features & DEBUG_MODE_WITH_UART)
         UART_init();
+#endif // LIBEDB_ENABLE_UART
 
     set_state(STATE_DEBUG);
 }
 
 void exit_debug_mode()
 {
+#ifdef LIBEDB_ENABLE_UART
     if (interrupt_context.features & DEBUG_MODE_WITH_UART)
         UART_teardown();
+#endif // LIBEDB_ENABLE_UART
 
     clear_interrupt_context();
 }
 
+#ifdef LIBEDB_ENABLE_UART
 /**
  * @brief Send a message in response to debugger's request to
  *        enter debug mode on boot.
@@ -240,6 +245,7 @@ void send_interrupted_msg()
 
     // On wakeup, we end up in the target<->debugger signal ISR
 }
+#endif // LIBEDB_ENABLE_UART
 
 #ifdef CONFIG_ENABLE_TARGET_SIDE_DEBUG_MODE
 void request_debug_mode(interrupt_type_t int_type, unsigned int_id, unsigned features)
@@ -320,6 +326,7 @@ void resume_application()
 }
 #endif
 
+#ifdef LIBEDB_ENABLE_UART
 uintptr_t mem_addr_from_bytes(uint8_t *buf)
 {
     return (uintptr_t)
@@ -562,6 +569,7 @@ static bool parse_cmd(cmd_t *cmd, uint8_t *msg, uint8_t len)
 
     return false;
 }
+#endif // LIBEDB_ENABLE_UART
 
 /**
  * @brief    Debug mode main loop.  This executes when the WISP enters debug mode,
@@ -585,11 +593,13 @@ static void debug_main()
 
     while(1) {
 
+#ifdef LIBEDB_ENABLE_UART
         // block until we receive a message
         UART_receive(uartRxBuf, CHUNK_BYTES);
         if (parse_cmd(&cmd, uartRxBuf, CHUNK_BYTES)) {
             execute_cmd(&cmd);
         }
+#endif // LIBEDB_ENABLE_UART
 
         if(debug_flags & DEBUG_RETURN) {
             debug_flags &= ~DEBUG_RETURN;
@@ -697,7 +707,9 @@ void edb_init()
 
     // Check if EDB requested us to enter debug mode
     if ((GPIO(PORT_SIG, IN) & BIT(PIN_SIG)) == BIT(PIN_SIG)) {
+#ifdef LIBEDB_ENABLE_UART
         send_interrupted_msg();
+#endif // LIBEDB_ENABLE_UART
     } else {
         // Listen for debugger request to enter debug mode
         unmask_debugger_signal();
