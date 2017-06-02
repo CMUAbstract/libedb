@@ -21,9 +21,11 @@
 #define DEBUG_MODE_REQUEST_WAIT_STATE_BITS      LPM0_bits
 #define DEBUG_MODE_EXIT_WAIT_STATE_BITS         LPM0_bits
 
+#ifdef LIBEDB_ENABLE_UART
 #define TX_BUF_SIZE 64
 
 static uint8_t tx_buf[TX_BUF_SIZE];
+#endif // LIBEDB_ENABLE_UART
 
 static app_output_cb_t *app_output_cb = NULL;
 
@@ -77,10 +79,12 @@ volatile __nv uint16_t _libedb_internal_breakpoints = 0x00;
 
 static uint16_t pc; // program counter at time of interrupt (retrieved from stack)
 
+#ifdef LIBEDB_ENABLE_UART
 // expecting 2-byte messages from the debugger (identifier byte + descriptor byte)
 static uint8_t uartRxBuf[CONFIG_DEBUG_UART_BUF_LEN];
 
 static uint8_t cmd_data_buf[WISP_CMD_MAX_LEN];
+#endif // LIBEDB_ENABLE_UART
 
 static void set_state(state_t new_state)
 {
@@ -577,7 +581,10 @@ static bool parse_cmd(cmd_t *cmd, uint8_t *msg, uint8_t len)
  */
 static void debug_main()
 {
+#ifdef LIBEDB_ENABLE_UART
     cmd_t cmd = { .data = cmd_data_buf };
+#endif // LIBEDB_ENABLE_UART
+
 #ifdef LED_IN_DEBUG_STATE
     GPIO(PORT_DEBUG_MODE_LED, OUT) |= BIT(PIN_DEBUG_MODE_LED);
 #endif
