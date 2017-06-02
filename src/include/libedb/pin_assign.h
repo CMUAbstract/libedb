@@ -109,6 +109,7 @@
     BIT(PIN_CODEPOINT_2) | \
     BIT(PIN_CODEPOINT_3) | \
     BIT(PIN_CODEPOINT_4))
+#define NUM_CODEPOINT_PINS 5
 
 #endif // BOARD_*
 
