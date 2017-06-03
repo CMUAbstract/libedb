@@ -2,7 +2,7 @@ LIB = libedb
 
 OBJECTS = \
 	edb.o \
-	io.o \
+	stdio.o \
 
 DEPS += \
 	libwispbase \
