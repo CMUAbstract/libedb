@@ -16,18 +16,6 @@ static unsigned stdio_payload_len = 0;
 
 int io_putchar(int c)
 {
-	unsigned r12;
-        __asm__ volatile ("mov r12, %0\n"
-			"mov r15, r12\n"
-			"call #io_putchar_c\n"
-			"mov %0, r12\n"
-			: "=r" (r12)
-			);
-}
-
-int io_putchar_c(int c)
-//int io_putchar(int c)
-{
     unsigned msg_len = 0;
     
     msg_payload[stdio_payload_len++] = (uint8_t)c;
