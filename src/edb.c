@@ -673,8 +673,7 @@ void edb_set_app_output_cb(app_output_cb_t *cb)
     app_output_cb = cb;
 }
 
-__attribute__ ((interrupt(GPIO_VECTOR(PORT_SIG))))
-void GPIO_ISR(PORT_SIG)(void)
+ISR(GPIO_VECTOR(PORT_SIG))
 {
 	switch(__even_in_range(INTVEC(PORT_SIG), INTVEC_RANGE(PORT_SIG)))
 	{
@@ -808,9 +807,3 @@ void GPIO_ISR(PORT_SIG)(void)
             break;
 	}
 }
-#ifdef __clang__
-// TODO: is this still necesarry -- was clang fixed since then?
-// TODO: make symbolic in terms of PORT_SIG
-__attribute__ ((section("__interrupt_vector_port1"),aligned(2)))
-void (*__vector_port1)(void) = GPIO_ISR(PORT_SIG);
-#endif
