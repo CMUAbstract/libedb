@@ -8,13 +8,13 @@ OBJECTS = \
 override SRC_ROOT := ../../src
 
 ifeq ($(TOOLCHAIN),ticl)
-CFLAGS += \
+override CFLAGS += \
 	--include_path="$(SRC_ROOT)" \
-	--include_path="$(SRC_ROOT)/include/libedb" \
+	--include_path="$(SRC_ROOT)/include/libedb" 
 else
-CFLAGS += \
+override CFLAGS += \
 	-I $(SRC_ROOT) \
-	-I $(SRC_ROOT)/include/libedb \
+	-I $(SRC_ROOT)/include/libedb 
 endif
 
 DEPS += \
