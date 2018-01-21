@@ -4,16 +4,16 @@ ifeq ($(CONFIG_EDB),1)
 override CFLAGS += -DCONFIG_EDB
 
 # Can't use DEPS facility for these because the toolchain has to be GCC
-ifeq ($(TOOLCHAIN),gcc)
-override DEPS += libedb libwispbase
+ifeq ($(TOOLCHAIN),clang)
+override CFLAGS += -I$(LIB_ROOT)/libedb/src/include
+override LFLAGS += -L$(LIB_ROOT)/libedb/bld/gcc
+override LIBS += -ledb
 else # TOOLCHAIN != gcc
 
 # libedb is special because it has to be compiled by GCC, not Clang,
 # even if the app is built with Clang
-override CFLAGS += -I$(LIB_ROOT)/libedb/src/include
-override LFLAGS += -L$(LIB_ROOT)/libedb/bld/gcc
-override LIBS += -ledb
 
+override DEPS += libedb libwispbase
 # libwispbase is special because it has to be compiled by GCC, not Clang,
 # even if the app is built with Clang
 #CFLAGS += -I$(LIB_ROOT)/libwispbase/src/include
