@@ -1,7 +1,5 @@
 #include <msp430.h>
 
-#include <libwispbase/wisp-base.h>
-
 #include <stdlib.h>
 #include <stdbool.h>
 

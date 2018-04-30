@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include <libwispbase/wisp-base.h>
 #include <libmsp/periph.h>
 #include <libmsp/mem.h>
 
