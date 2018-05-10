@@ -1,20 +1,6 @@
 #ifndef LIBDEBUG_PIN_ASSIGN_H
 #define LIBDEBUG_PIN_ASSIGN_H
 
-#define BIT_INNER(idx) BIT ## idx
-#define BIT(idx) BIT_INNER(idx)
-
-#define GPIO_INNER(port, reg) P ## port ## reg
-#define GPIO(port, reg) GPIO_INNER(port, reg)
-
-#define INTFLAG_INNER(port, pin) P ## port ## IV_ ## P ## port ## IFG ## pin
-#define INTFLAG(port, pin) INTFLAG_INNER(port, pin)
-
-// Ugly workaround to make the pretty GPIO macro work for OUT register
-// (a control bit for TAxCCTLx uses the name 'OUT')
-#undef OUT
-
-
 // Notes concerning CODEPOINT pins:
 //   NOTE: Code point pins must be on same port
 //   NOTE: When using the same pins as PIN_STATE, must disable CONFIG_STATE_PINS
