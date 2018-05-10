@@ -111,6 +111,25 @@
     BIT(PIN_CODEPOINT_4))
 #define NUM_CODEPOINT_PINS 5
 
+#elif defined(BOARD_MSP_EXP430FR5994)
+
+#define PORT_SIG   3
+#define PIN_SIG    5
+
+#define PORT_CODEPOINT  3
+#define PIN_CODEPOINT_0 0
+#define PIN_CODEPOINT_1 1
+#define PIN_CODEPOINT_2 2
+#define PIN_CODEPOINT_3 3
+#define PIN_CODEPOINT_4 4
+#define BITS_CODEPOINT  (\
+    BIT(PIN_CODEPOINT_0) | \
+    BIT(PIN_CODEPOINT_1) | \
+    BIT(PIN_CODEPOINT_2) | \
+    BIT(PIN_CODEPOINT_3) | \
+    BIT(PIN_CODEPOINT_4))
+#define NUM_CODEPOINT_PINS 5
+
 #endif // BOARD_*
 
 #endif // LIBDEBUG_PIN_ASSIGN_H
